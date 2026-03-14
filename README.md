@@ -53,8 +53,11 @@ To establish a performance benchmark, several standard regression algorithms fro
 - **Other Approaches:** [Support Vector Regression (SVR)](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html) ([Wiki](https://en.wikipedia.org/wiki/Support-vector_machine#Regression)), [K-Nearest Neighbors (KNN)](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html) ([Wiki](https://en.wikipedia.org/wiki/K-nearest_neighbor_algorithm)), [Multi-Layer Perceptron (MLP Regressor)](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html) ([Wiki](https://en.wikipedia.org/wiki/Multilayer_perceptron))
 
 **3. Advanced Modeling (`02_advanced_modeling_catboost.ipynb`):**
-After evaluating the baselines, the focus shifted to more advanced gradient boosting techniques that handle categorical features natively.
-- **[CatBoostRegressor](https://catboost.ai/en/docs/concepts/python-reference_catboostregressor) ([Wiki](https://en.wikipedia.org/wiki/CatBoost)):** Chosen for its superior handling of the categorical nature of tourism survey responses without extensive one-hot encoding, leading to lower Mean Absolute Error (MAE) and the best performance on the leaderboard.
+After evaluating the baselines (which were primarily assessed on MSE and R2 metrics), the focus shifted to more advanced gradient boosting techniques that handle categorical features natively to directly optimize the competition's MAE metric.
+- **[CatBoostRegressor](https://catboost.ai/en/docs/concepts/python-reference_catboostregressor) ([Wiki](https://en.wikipedia.org/wiki/CatBoost)):** Chosen for its superior handling of the categorical nature of tourism survey responses without extensive one-hot encoding.
+  - **Ensemble Strategy & Hyperparameters:** Rather than relying on a single model, an ensemble approach was taken. Ten separate `CatBoostRegressor` models were trained with varying tree depths (`depth` = 0 to 9) and the final predictions were averaged. 
+  - **Shared Parameters:** `iterations=1000`, `loss_function='MAE'`, and `logging_level='Silent'`.
+  - **🏆 Final Performance:** The optimized CatBoost ensemble achieved a **Validation Mean Absolute Error (MAE) of ~3,835,241 TZS** (Tanzanian Shillings), delivering the best performance on the leaderboard and significantly improving upon the traditional baselines.
 
 ## Technologies & Libraries Used
 - **Language**: [Python 3](https://www.python.org/)
@@ -80,9 +83,9 @@ After evaluating the baselines, the focus shifted to more advanced gradient boos
 - Thank you to **Zindi Ambassador Davis David** for creating this competition.
 - Data and challenge hosting provided by the **[Zindi Africa](https://zindi.africa/)** platform.
 
-## What I Learned
-Throughout the development of this predictive model, I gained valuable experience and enhanced my skills in several key areas:
-- **Categorical Data Handling:** Learned how to effectively process and encode a high cardinality of categorical features which are prevalent in survey data. I discovered that algorithms like CatBoost handle these intrinsically much better than traditional one-hot encoding methods.
-- **Model Evaluation:** Deepened my understanding of the Mean Absolute Error (MAE) metric and how it interprets the real-world financial cost differences compared to other metrics like RMSE.
-- **Hyperparameter Tuning & Feature Importance:** Explored how fine-tuning gradient boosting algorithms and understanding feature importance can significantly improve leaderboard rankings in a competitive machine learning hackathon.
+## What I Learned & What Improved the Process
+Throughout the development of this predictive model, several key iterations drastically improved the final results:
+- **Categorical Data Handling (The Biggest Improvement):** Survey data is notoriously high in cardinality (e.g., thousands of different user responses for locations, agencies, etc.). I discovered that relying on traditional algorithms with one-hot encoding resulted in highly sparse data, hurting performance. Switching to **CatBoost**, which intrinsically handles categoricals, was the single biggest improvement in the process.
+- **Targeting the Right Metric:** Early baseline models relied on R2 and Mean Squared Error (MSE), which overly penalized outliers. Shifting the optimization landscape strictly to **Mean Absolute Error (MAE)** aligned the model perfectly with the Zindi evaluation criteria, dropping the error down to **~3.83M TZS**.
+- **Model Evaluation:** Deepened my understanding of how MAE interprets real-world financial cost differences compared to other metrics like RMSE.
 - **Real-World Application:** Gained practical experience applying machine learning to real-world socio-economic data to solve a concrete business problem for the tourism industry.
